@@ -121,7 +121,7 @@
 		}
 
 		#debugger {
-			display: none;
+			/* display: none; */
 			position: absolute;
 			left: 0;
 			bottom: 0;
@@ -140,6 +140,9 @@
 			background-color: var(--gray-100);
 			color: white;
 			cursor: pointer;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	</style>
 </head>
@@ -185,7 +188,64 @@
 		// get magneto
 		const magneto = document.querySelector('.magneto')
 		const magnetoText = document.querySelector('.magneto .text')
-		const dbgr = document.querySelector()
+		const dbgr = document.querySelector('#debugger')
+
+		// mouse move stuff
+		const activateMagneto = (event) => {
+			let boundBox = magneto.getBoundingClientRect()
+			const magnetoStrength = 40
+			const magnetoTextStrength = 80
+			const newX = ((event.clientX - boundBox.left)/magneto.offsetWidth)-0.5
+			const newY = ((event.clientY - boundBox.top)/magneto.offsetHeight)-0.5
+
+
+			// just for debugging purpose
+			dbgr.innerHTML = 'cursorX: ' + event.clientX
+			+'<br>boxLeft: ' + Math.ceil(boundBox.left)
+			+'<br>CursorInsideButton: ' + Math.ceil(event.clientX - boundBox.left)
+			+'<br>relativeToTotalWidth: ' + ((event.clientX - boundBox.left)/magneto.offsetWidth).toFixed(2)
+			+'<br>shifted: ' + ((event.clientX - boundBox.left)/magneto.offsetWidth - 0.5).toFixed(2)
+
+			//move the button to it's new position
+			gsap.to(magneto, {
+				duration: 1,
+				x: newX * magnetoStrength,
+				y: newY * magnetoStrength,
+				ease: Power4.easeOut
+			})
+
+			//move the button text to it's new position
+			gsap.to(magnetoText, {
+				x: newX * magnetoTextStrength,
+				y: newY * magnetoTextStrength,
+				ease: Power4.easeOut
+			})
+
+		}
+
+		// mouse leave stuff
+		const resetMagneto = (event) => {
+			//move the button to it's default position
+			gsap.to(magneto,{
+				duration: 1,
+				x: 0,
+				y: 0,
+				ease: Elastic.easeOut
+			})
+
+			//move the button text to it's default position
+			gsap.to(magnetoText,{
+				duration:1,
+				x: 0,
+				y: 0,
+				ease: Elastic.easeOut
+			})
+
+		}
+
+		// add event listeners
+		magneto.addEventListener('mousemove', activateMagneto);
+		magneto.addEventListener('mouseleave',resetMagneto)
 	</script>
 </body>
 </html>
