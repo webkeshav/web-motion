@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Exercise #16 || Typewriter effect</title>
+	<title>Exercise #17 || Mouse follow effect</title>
 
 	<!-- Reset -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css">
@@ -11,19 +11,17 @@
 	<!-- Google Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap" rel="stylesheet">
 
 	<style>
 		:root {
 			--gray-100: #262626;
-			--gray-80: #515151;
-			--secondary: #DAA25A;
-			--accent: #59ABD9;
+			--accent: #D11F3E;
 		}
 
 		html {
 			font-size: 16px;
-			font-family: 'Quicksand', sans-serif;
+			font-family: 'Rubik', sans-serif;
 			line-height: 1.2;
 		}
 
@@ -39,7 +37,7 @@
 		h1 {
 			font-size: 5.625rem;
 			text-align: center;
-			font-weight: 700;
+			font-weight: 400;
 			letter-spacing: -3.6px;
 		}
 
@@ -48,7 +46,7 @@
 			justify-content: center;
 			align-items: center;
 			gap: .5rem;
-			color: var(--accent);
+			color: var(--gray-100);
 			text-decoration: none;
 			font-weight: 700;
 			transition: .2s ease-in-out;
@@ -64,27 +62,15 @@
 		}
 
 		.button svg {
-			fill: var(--accent);
+			fill: var(--gray-100);
 			transition: fill .2s ease-in-out;
-		}
-
-		#our-work {
-			color: var(--gray-80);
-			text-align: center;
-		}
-
-		#our-work svg {
-			fill: var(--gray-80);
-		}
-
-		#our-work p {
-			margin-bottom: .5rem;
 		}
 
 		#hero {
 			display: flex;
 			flex-direction: column;
 			height: 100dvh;
+			align-items: center;
 			justify-content: space-between;
 			padding: 4rem;
 		}
@@ -93,6 +79,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			width: 100%;
 		}
 
 		.header-side-content {
@@ -118,18 +105,42 @@
 		nav a {
 			text-decoration: none;
 			color: var(--gray-100);
-			transition: color .2s ease-in-out;
+			transition: transform .2s ease-in-out;
+			display: inline-block;
 		}
 
 		nav a:hover {
-			color: var(--secondary);
+			transform: translate3d(.5rem, 0, 0);
 		}
 
 		h1 span {
-			color: var(--secondary);
+			background-color: var(--accent);
+			color: white;
+			border-radius: 1rem;
+			padding: .5rem 1rem;
+		}
+
+		#debugger {
+			display: none;
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			background-color: var(--gray-100);
+			color: white;
+			padding: 2rem;
+			width: 20rem;
 		}
 
 		/* Air */
+		.magneto{
+			width: 10rem;
+			height: 10rem;
+			border-radius: 50%;
+			border: none;
+			background-color: var(--gray-100);
+			color: white;
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
@@ -157,73 +168,24 @@
 			</div>
 		</header>
 
-		<!-- Air -->
-		<!-- <h1>Shaping Visions into Reality with <span>Boldness</span></h1> -->
-		<h1>Shaping Visions into Reality with 
-			<span id="typewriter"></span>
-			<span id="cursor"> | </span>
-		</h1>
-		<!-- End Air -->
+		<h1>Shaping Visions into Reality with <span>Boldness</span></h1>
 
-		<div id="our-work">
-			<p>Our Work</p>
-			<svg width="12" height="12" viewBox="0 0 12 12">
-				<path fill-rule="evenodd" clip-rule="evenodd" d="M11.0303 6.53033C11.3232 6.23744 11.3232 5.76256 11.0303 5.46967C10.7374 5.17678 10.2626 5.17678 9.96967 5.46967L6.75 8.68934L6.75 0.75C6.75 0.335786 6.41421 -2.11379e-07 6 -2.29485e-07C5.58579 -2.47591e-07 5.25 0.335786 5.25 0.75L5.25 8.68934L2.03033 5.46967C1.73744 5.17678 1.26256 5.17678 0.96967 5.46967C0.676777 5.76256 0.676777 6.23744 0.96967 6.53033L5.46967 11.0303C5.76256 11.3232 6.23744 11.3232 6.53033 11.0303L11.0303 6.53033Z"/>
-			</svg>
-		</div>
+		<!-- Air -->
+		 <button class="magneto">
+			<span class="text">Our Work</span>
+		 </button>
+
+		 <div id="debugger"></div>
+		<!-- End Air -->
 	</section>
 
 	<!-- Air -->
 	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
-
 	<script>
-		const words = ['Boldness', 'Clarity', 'Originality', 'Precision']
-
-		//main timeline
-		let mainTimeline = gsap.timeline({
-			repeat: -1
-		})
-
-		// for each word, create a new timeline, use the text plugin, then append the timeline to the main one
-		words.forEach(word=>{
-			let textTimeline = gsap.timeline({
-				repeat:1,
-				yoyo:true,
-				repeatDelay:4
-			})
-
-			textTimeline.to('#typewriter',{
-				text:word,
-				duratikon:1,
-				onUpdate: () => {
-					cursorTimeline.restart()
-					cursorTimeline.pause()
-				},
-				onComplete: () => {
-					cursorTimeline.play()
-				}
-			})
-
-			mainTimeline.add(textTimeline)
-		})
-
-		// blinking cursor
-
-		let cursorTimeline = gsap.timeline({
-			repeat : -1,
-			repeatDelay : .8
-		})
-
-		cursorTimeline.to('#cursor',{
-			opacity : 1,
-			duration : 0
-		}).to('#cursor',{
-			opacity: 0,
-			duration : 0,
-			delay : .8
-		})
+		// get magneto
+		const magneto = document.querySelector('.magneto')
+		const magnetoText = document.querySelector('.magneto .text')
+		const dbgr = document.querySelector()
 	</script>
 </body>
 </html>
